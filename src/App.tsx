@@ -3,12 +3,14 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 import axios from "axios";
+import generateInfo from "./api/gpt";
 
 function App() {
   const [commodity, setCommodity] = useState("");
-  const [country, setCountry] = useState("GB");
+  const [country, setCountry] = useState("FR");
+  const [commodityCode, setCommodityCode] = useState("");
   const [rule, setRule] = useState("");
-  const [commodityData, setCommodityData] = useState("");
+  const [, setCommodityData] = useState("");
   const [error, setError] = useState(false);
 
   const getRuleOfOrigin = async (commodityCode: string, country: string) => {
@@ -27,7 +29,7 @@ function App() {
       })
       .catch((error) => {
         setError(true);
-        throw new Error(error);
+        console.log(error);
       });
   };
 
@@ -47,7 +49,7 @@ function App() {
       })
       .catch((error) => {
         setError(true);
-        throw new Error(error);
+        console.log(error);
       });
   };
 
@@ -56,9 +58,25 @@ function App() {
       <header className="App-header">
         <img src={reactLogo} className="App-logo" alt="logo" />
         <img src={viteLogo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
+        <input
+          type="text"
+          value={commodityCode}
+          onChange={(e) => setCommodityCode(e.target.value)}
+        />
+        <button
+          onClick={() => (
+            setCommodity(""),
+            setRule(""),
+            setError(false),
+            generateInfo(commodityCode).then((res) => {
+              setCommodity(res);
+              getRuleOfOrigin(res, country);
+              getCommodityData(res);
+            })
+          )}
+        >
+          Search
+        </button>
         <input
           type="text"
           value={commodity}
@@ -77,8 +95,8 @@ function App() {
           Get Commodity Data
         </button>
         {error && <div>Error</div>}
+        <div>{commodityCode}</div>
         <div>{rule}</div>
-        <div>{commodityData}</div>
       </header>
     </div>
   );
