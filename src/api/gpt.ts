@@ -23,4 +23,25 @@ const generateInfo = async (string: string) => {
   }
 };
 
-export default generateInfo;
+const summariseInfo = async (string: string) => {
+  if (string.length < 200) return string
+  
+  const prompt = `You are summarising this text. I will ask you to summarise a given text. Please reply with only the summary itself. For example, if the summary is "This is a summary", your reply will be strictly "This is a summary" with absolutely no other text. I want text only. The first item is: ${string}`
+
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      messages: [{ role: "user", content: `${prompt}${string}` }],
+      max_tokens: 200,
+      temperature: 1,
+      n: 1,
+    });
+    const response = completion.choices[0].message.content;
+    return response
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export { generateInfo, summariseInfo }

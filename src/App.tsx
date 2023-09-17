@@ -3,7 +3,7 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 import axios from "axios";
-import generateInfo from "./api/gpt";
+import { generateInfo, summariseInfo } from "./api/gpt";
 
 function App() {
   const [commodity, setCommodity] = useState("");
@@ -20,7 +20,7 @@ function App() {
       )
       .then((response) => {
         if (response.status === 200) {
-          setRule(response.data.included[6].attributes.rule);
+          setRule(response.data.included);
         } else if (response.status === 404) {
           throw new Error("Commodity not found");
         } else {
@@ -53,11 +53,41 @@ function App() {
       });
   };
 
+  const renderResults = (response) => {
+    // response will be an array of objects with n number of keys
+    // each object has a 'attributes' key which itself is an object
+    // the 'attributes' object has n number of keys
+    // for each key in the 'attributes' object, render a div with the key and value
+
+    if (response.length === 0) {
+      return <div>No results</div>;
+    }
+
+    return response.map((result) => {
+      const attributes = result.attributes;
+
+      return (
+        <div>
+          {Object.keys(attributes).map((key) => {
+            return (
+              <div>
+                <span>{key}:</span>
+                <p>{attributes[key]}</p>
+              </div>
+            );
+          })}
+        </div>
+      );
+    });
+  };
+
   return (
     <div className="App">
       <header className="App-header">
         <img src={reactLogo} className="App-logo" alt="logo" />
         <img src={viteLogo} className="App-logo" alt="logo" />
+      </header>
+      <main>
         <input
           type="text"
           value={commodityCode}
@@ -96,8 +126,8 @@ function App() {
         </button>
         {error && <div>Error</div>}
         <div>{commodityCode}</div>
-        <div>{rule}</div>
-      </header>
+        {renderResults(rule)}
+      </main>
     </div>
   );
 }
