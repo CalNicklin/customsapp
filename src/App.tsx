@@ -9,6 +9,8 @@ import { postData, tqamAPI } from "./api/backend";
 function App() {
   const [commodity, setCommodity] = useState("");
   const [country, setCountry] = useState("FR");
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
   const [commodityCode, setCommodityCode] = useState("");
   const [rule, setRule] = useState("");
   const [, setCommodityData] = useState("");
@@ -82,18 +84,14 @@ function App() {
     });
   };
 
-  const hello = async () => {
-    const res = await tqamAPI();
-    console.log(res);
-    
-    
+  const getData = async (data) => {
+    try {
+      const res = await postData(data);
+      setAnswer(res);
+    } catch (err) {
+      console.log(err);
+    }
   };
-
-
-  const getData = async () => {
-    const res = await postData();
-    console.log(res);
-  }
 
   return (
     <div className="App">
@@ -138,20 +136,15 @@ function App() {
         >
           Get Commodity Data
         </button>
-        <button
-          onClick={() => (
-            hello()
-          )}
-        >
-          Hello
-        </button>
-        <button
-          onClick={() => (
-            getData()
-          )}
-        >
-          GetData
-        </button>
+        <div style={{ display: "block" }}>
+          <input
+            type="text"
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+          />
+          <button onClick={() => getData(question)}>GetData</button>
+          <div>{answer ? answer : 'awaiting query...'}</div>
+        </div>
         {error && <div>Error</div>}
         <div>{commodityCode}</div>
         {renderResults(rule)}
