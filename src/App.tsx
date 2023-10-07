@@ -84,7 +84,8 @@ function App() {
 
   const hello = async () => {
     const res = await tqamAPI();
-    alert(res?.data.data);
+    console.log(res);
+    
     
   };
 
