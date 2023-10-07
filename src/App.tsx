@@ -4,6 +4,7 @@ import viteLogo from "/vite.svg";
 import "./App.css";
 import axios from "axios";
 import { generateInfo, summariseInfo } from "./api/gpt";
+import { postData, tqamAPI } from "./api/backend";
 
 function App() {
   const [commodity, setCommodity] = useState("");
@@ -81,6 +82,18 @@ function App() {
     });
   };
 
+  const hello = async () => {
+    const res = await tqamAPI();
+    alert(res?.data.data);
+    
+  };
+
+
+  const getData = async () => {
+    const res = await postData();
+    console.log(res);
+  }
+
   return (
     <div className="App">
       <header className="App-header">
@@ -123,6 +136,20 @@ function App() {
           )}
         >
           Get Commodity Data
+        </button>
+        <button
+          onClick={() => (
+            hello()
+          )}
+        >
+          Hello
+        </button>
+        <button
+          onClick={() => (
+            getData()
+          )}
+        >
+          GetData
         </button>
         {error && <div>Error</div>}
         <div>{commodityCode}</div>
