@@ -1,4 +1,5 @@
 import axios from 'axios';
+import colors from '../../backend/colors.json'
 
 const tqamAPI = async () => {
   try {
@@ -13,7 +14,7 @@ const tqamAPI = async () => {
 
 const postData = async (question: string) => {
   const data = {
-    data: { "Name": { "0": "George", "1": "Brad", "2": "Tim" }, "Movies": { "0": 78, "1": 34, "2": 64 } },
+    data: colors,
     question: question
   };
 
